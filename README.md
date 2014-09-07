@@ -30,3 +30,15 @@ What we need is a better way to describe the required command-line arguments for
 `hopts` works by compiling an [S-expression](http://en.wikipedia.org/wiki/S-expression)-based custom language to the wonderful [optparse-applicative](https://hackage.haskell.org/package/optparse-applicative) utility. `hopts` then takes your applications arguments and sets them to the environment variables you specified above.
 
 whoop!
+
+## Manifesto of Command Line Arguments
+
+Config files are wreckless. The moment you specify your application's config in a file, a number of dangerous things happen:
+
+- you need to parse the config file, which may cause failure, especially if you're using an obscure or custom configuration file format.
+- your application now has a dependency on the location of your configuration within the file-system (or JAR-esque equivalent).
+- the entry point to your application is now obscured, as fancy Dependency Injection frameworks or imperative, side-effecty languages allow you to configure your components *anywhere* in your application.
+- in addition to the above, you now have an unrestricted set of config-file-effects and failures all over your codebase. Without discipline and documentation.
+- packaging and running your app in a dynamic or multi-tenant environment requires you to *generate* your config files at runtime (youch!).
+
+Meanwhile, we've been using a universal interface for configuration all along: command line arguments!
