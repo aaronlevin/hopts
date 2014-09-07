@@ -1,4 +1,4 @@
-# hopts - Sane Command Line Argument Parsing For Shell Scripts
+# hopts - Command-Line Arguments For Shell Scripts
 
 Scrap your config files. Command Line Arguments are a universal interface. Unfortunately, the world of command-line argument parsing is horrendous: `getopts` is not portable, `getopt` doesn't provide double-dash/long-form options, and brute-forcing with `shift` is too mind-bending. Furthermore, dealing with quotations and whitespace in shell scripts (and other stringly-typed languages) is dangerous and anxiety-inducing.
 
