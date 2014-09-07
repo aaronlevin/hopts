@@ -10,18 +10,18 @@ What we need is a better way to describe the required command-line arguments for
 
     #!/bin/bash
     
-    cmdLine() {
+    cmdLineIO() {
       local arg1='(arg-short a AWS_KEY "Your AWS key")'
       local arg2='(arg-long s aws-secret AWS_SECRET "Your AWS secret")'
       local arg3='(arg-switch d debug-mode DEBUG_MODE "Place the app in DEBUG mode")'
       
       local args="[ $arg1, $arg2, $arg3 ]"
      
-      hopts $args "$@"
+      hopts "$args" "$@"
     
     }
 
-    cmdLine "$@"
+    cmdLineIO "$@"
 
     echo "$AWS_KEY"
     echo "$AWS_SECRET"
