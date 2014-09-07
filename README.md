@@ -9,7 +9,6 @@ There must be another way!
 What we need is a better way to describe the required command-line arguments for our applications. But how do we accomplish? Enter `hopts`!
 
     ☭ cat app.sh
-
     #!/bin/bash
     
     cmdLineIO() {
