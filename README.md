@@ -17,7 +17,7 @@ What we need is a better way to describe the required command-line arguments for
       
       local args="[ $arg1, $arg2, $arg3 ]"
      
-      hopts args "$@"
+      hopts $args "$@"
     
     }
 
