@@ -21,7 +21,7 @@ import Text.ParserCombinators.Parsec ((<|>), between, char, letter, many, noneOf
 -}
 data ArgCommand = ShortCmd     -- ^ 'short'
                 | LongCmd      -- ^ 'long'
-                | ShortLongCmd -- ^ 'short-long'
+                | ShortLongCmd -- ^ 'short\-long'
 
 {-| 'ArgData' describes Data contained in command-line arguments
 -}
@@ -77,9 +77,13 @@ parseQuote :: Parser String
 parseQuote = char '"' *> many (noneOf "\"") <* char '"'
 
 {-| 'parseArgCmd' parses an argument command. Example arg-commands:
-    1. 'short'
-    2. 'long'
-    3. 'short-long'
+
+@
+    short
+    long
+    short-long
+@
+
 -}
 parseArgCmd :: Parser ArgCommand
 parseArgCmd = do
@@ -91,7 +95,11 @@ parseArgCmd = do
     _            -> fail ("unknown argument command: " ++ cmd)
 
 {-| 'parseTransformerCmd' parses a transformer command. Example transformer commands:
-    1. 'switch'
+
+@
+    switch
+@
+
 -}
 parseTransformerCmd :: Parser ArgTransformer
 parseTransformerCmd = do
@@ -101,12 +109,14 @@ parseTransformerCmd = do
     _        -> fail ("unknown transformer command: " ++ cmd)
 
 {-| 'parseShortArgData' parses elements occuring after a short argument command
+
 @
-  (short x X_VAR "set x")'
+\  (short x X_VAR "set x")
          ^_____________^
                 v
          parsing this part
 @
+
 -}
 parseShortArgData :: Parser ArgData
 parseShortArgData = do
@@ -116,12 +126,14 @@ parseShortArgData = do
   return $ ShortArg shortArg envVar quote False
 
 {-| 'parseLongArgData' parses elements occuring after a long argument command
+
 @
-  (long xxyyzz XYZ_VAR "set XYZ_VAR to value")
+\  (long xxyyzz XYZ_VAR "set XYZ_VAR to value")
         ^___________________________________^
                          v
                  parsing this part
 @
+
 -}
 parseLongArgData :: Parser ArgData
 parseLongArgData = do
@@ -131,12 +143,14 @@ parseLongArgData = do
   return $ LongArg longArg envVar quote False
 
 {-| 'parseShortLongArgCmd' parses elements occuring after a short-long command
+
 @
-  (short-long a aws-key AWS_KEY "Your amazon key")
+\  (short-long a aws-key AWS_KEY "Your amazon key")
               ^_________________________________^
                               v
                       parsing this part
 @
+
 -}
 parseShortLongArgData :: Parser ArgData
 parseShortLongArgData = do
@@ -150,12 +164,14 @@ parseShortLongArgData = do
   return $ ShortLongArg shortArg longArg envVar quote False
 
 {-| 'parseArgDataExpression' parses an argument expression within brackets
+
 @
-  (short a AWS_KEY "your aws key")
+\  (short a AWS_KEY "your aws key")
   ^______________________________^
                v
         parsing this part
 @
+
 -}
 parseArgDataExpression :: Parser ArgData
 parseArgDataExpression = do
@@ -171,12 +187,14 @@ parseArgDataExpression = do
   return argData
 
 {-| 'parseTransformerExpression' parsers a transformer expression
+
 @
-  (switch (short-long a aws-key AWS_KEY "your aws key"))
+\  (switch (short-long a aws-key AWS_KEY "your aws key"))
   ^____________________________________________________^
                           v
                   parsing this part
 @
+
 -}
 parseTransformerExpression :: Parser ArgData
 parseTransformerExpression = do
@@ -190,19 +208,24 @@ parseTransformerExpression = do
   return $ argDataTransformer argTransformer argData
 
 {-| 'parseExpression' parses the most general, bracketed s-expression
+
 @
-  (switch (...))
+\  (switch (...))
   ^____________^
         v
       (this)
 @
+
 or
+
 @
-  (short-long ...)
+
+\  (short-long ...)
   ^______________^
          v
        (this)
 @
+
 -}
 parseExpression :: Parser ArgData
 parseExpression = do
@@ -215,13 +238,15 @@ parseExpression = do
 
 
 {-| 'parseExpressions' parses a list of expressions, wrapped in square brackets
+
 @
-  [ (...arg1...) , (...arg2...) , ... ]
+\  [ (...arg1...) , (...arg2...) , ... ]
   ^___________________________________^
                   v
                 (this)
 @
-results in '[arg1, arg2, ...]'
+
+results in @[arg1, arg2, ...]@
 -}
 parseExpressions :: Parser [ArgData]
 parseExpressions = do
