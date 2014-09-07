@@ -18,7 +18,7 @@ cabal-version:       >=1.10
 
 executable hopts
   main-is:             Main.hs
-  -- other-modules:       
+  other-modules:       Hopts.Language
   other-extensions:    OverloadedStrings
   build-depends:       base >=4.7 && <4.8
                        , optparse-applicative
