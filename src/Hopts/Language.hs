@@ -77,9 +77,9 @@ parseQuote :: Parser String
 parseQuote = char '"' *> many (noneOf "\"") <* char '"'
 
 {-| 'parseArgCmd' parses an argument command. Example arg-commands:
-- 'short'
-- 'long'
-- 'short-long'
+1. 'short'
+2. 'long'
+3. 'short-long'
 -}
 parseArgCmd :: Parser ArgCommand
 parseArgCmd = do
@@ -91,7 +91,7 @@ parseArgCmd = do
     _            -> fail ("unknown argument command: " ++ cmd)
 
 {-| 'parseTransformerCmd' parses a transformer command. Example transformer commands:
-- 'switch'
+1. 'switch'
 -}
 parseTransformerCmd :: Parser ArgTransformer
 parseTransformerCmd = do
