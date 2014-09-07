@@ -8,6 +8,8 @@ There must be another way!
 
 What we need is a better way to describe the required command-line arguments for our applications. But how do we accomplish? Enter `hopts`!
 
+    ☭ cat app.sh
+
     #!/bin/bash
     
     cmdLineIO() {
@@ -26,6 +28,12 @@ What we need is a better way to describe the required command-line arguments for
     echo "$AWS_KEY"
     echo "$AWS_SECRET"
     echo "$DEBUG_MOD"
+
+    ☭ ./app.sh -a "my-aws-key" --aws-secret "my-aws-secret" --debug-mode
+    my-aws-key
+    my-aws-secret
+    true
+
 
 `hopts` works by compiling an [S-expression](http://en.wikipedia.org/wiki/S-expression)-based custom language to the wonderful [optparse-applicative](https://hackage.haskell.org/package/optparse-applicative) utility. `hopts` then takes your applications arguments and sets them to the environment variables you specified above.
 
