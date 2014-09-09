@@ -14,9 +14,9 @@ import Control.Applicative ((*>), (<*))
 import Data.These (These(This,That,These))
 import Text.ParserCombinators.Parsec ((<|>), between, char, letter, many, many1, noneOf, optionMaybe, Parser, try, sepBy, spaces, upper)
 
-type EnvVar = String
+type EnvVar = String -- ^ type alias for environment variables
 
-type ArgFlag = These Char String
+type ArgFlag = These Char String -- ^ type alias for pairs of short/long command-line argument flags
 
 data ArgType = SwitchArg
              | StringArg
@@ -52,6 +52,11 @@ parseEnvVar = many (upper <|> char '_')
 parseQuote :: Parser String
 parseQuote = char '"' *> many (noneOf "\"") <* char '"'
 
+{-| 'parseArgument' attempts to parse an argument. Arguments come in one of three forms:
+1. A single character (e.g. @./app.sh -c "cool"@)
+2. A string (e.g. @/.app.sh --aws-key "myawskey"@)
+3. A single character and a string (e.g. @./app.sh -c "cool"@ or @./app.sh --aws-key "cool"@)
+-}
 parseArgument :: Parser Argument
 parseArgument = do
   between (char '(' <* spaces) (spaces *> char ')') $ do
