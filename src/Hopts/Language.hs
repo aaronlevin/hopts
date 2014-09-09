@@ -13,7 +13,7 @@ module Hopts.Language (
 
 import Control.Applicative ((*>), (<*))
 import Data.These (These(This,That,These))
-import Text.ParserCombinators.Parsec ((<|>), between, char, letter, many, many1, noneOf, optionMaybe, Parser, try, sepBy, spaces, upper)
+import Text.ParserCombinators.Parsec ((<|>), between, char, letter, many, many1, noneOf, optionMaybe, Parser, try, sepBy, space, spaces, upper)
 
 type EnvVar = String -- ^ type alias for environment variables
 
@@ -21,8 +21,9 @@ type ArgFlag = These Char String -- ^ type alias for pairs of short/long command
 
 data ArgType = SwitchArg
              | StringArg
+             deriving Show
 
-data Argument = Argument ArgType ArgFlag EnvVar (Maybe String)
+data Argument = Argument ArgType ArgFlag EnvVar (Maybe String) deriving Show
 
 parseArgType :: Parser ArgType
 parseArgType = do
@@ -34,7 +35,7 @@ parseArgType = do
 
 parseArgFlag :: Parser ArgFlag
 parseArgFlag = do
-  argChar <- try $ optionMaybe $ letter <* many1 spaces
+  argChar <- try $ optionMaybe $ letter <* many1 space
   argLong <- try $ optionMaybe $ many (letter <|> char '-')
   case (argChar, argLong) of
     (Just c, Just lng)  -> return $ These c lng
@@ -61,8 +62,8 @@ parseQuote = char '"' *> many (noneOf "\"") <* char '"'
 parseArgument :: Parser Argument
 parseArgument = do
   between (char '(' <* spaces) (spaces *> char ')') $ do
-    argType <- parseArgType <* many1 spaces
-    argFlag <- parseArgFlag <* many1 spaces
+    argType <- parseArgType <* many1 space
+    argFlag <- parseArgFlag <* many1 space
     envVar  <- parseEnvVar  <* spaces
     quote   <- try $ optionMaybe $ parseQuote
     return $ Argument argType argFlag envVar quote
