@@ -1,11 +1,13 @@
 module Hopts.Language (
-  , parseExpressions
-  , parseLongArg
-  , parseLongArgData
+    ArgFlag
+  , ArgType(..)
+  , Argument(..)
+  , parseArgType
+  , parseArgFlag
+  , parseEnvVar
   , parseQuote
-  , parseShortArgData
-  , parseShortLongArgData
-  , parseTransformerExpression
+  , parseArgument
+  , parseExpression
   ) where
 
 import Control.Applicative ((*>), (<*))
@@ -34,8 +36,8 @@ parseArgFlag = do
   argChar <- try $ optionMaybe $ letter <* many1 spaces
   argLong <- try $ optionMaybe $ many (letter <|> char '-')
   case (argChar, argLong) of
-    (Just c, Just lng) -> return $ These c lng
-    (Just c, Nothing) -> return $ This c
+    (Just c, Just lng)  -> return $ These c lng
+    (Just c, Nothing)   -> return $ This c
     (Nothing, Just lng) -> return $ That lng
     _                   -> fail "must specify either or both a short and long argument flag"
 
@@ -59,7 +61,7 @@ parseArgument = do
     quote   <- try $ optionMaybe $ parseQuote
     return $ Argument argType argFlag envVar quote
 
-{-| 'parseExpressions' parses a list of expressions, wrapped in square brackets
+{-| 'parseExpression' parses a list of expressions, wrapped in square brackets
 
 @
 \  [ (...arg1...) , (...arg2...) , ... ]
@@ -69,9 +71,10 @@ parseArgument = do
 @
 
 results in @[arg1, arg2, ...]@
+
 -}
-parseExpressions :: Parser [Argument]
-parseExpressions = do
+parseExpression :: Parser [Argument]
+parseExpression = do
   _ <- char '['
   spaces
   args <- between spaces spaces parseArgument `sepBy` char ','
