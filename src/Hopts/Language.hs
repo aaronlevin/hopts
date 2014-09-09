@@ -2,6 +2,7 @@ module Hopts.Language (
     ArgFlag
   , ArgType(..)
   , Argument(..)
+  , EnvVar
   , parseArgType
   , parseArgFlag
   , parseEnvVar

@@ -2,23 +2,31 @@
 -}
 
 module Hopts.Options (
-  argDataToOptParse
+  argToOption
   ) where
 
 import Control.Applicative ((<$>))
-import Hopts.Language (ArgData(ShortArg))
-import Options.Applicative ((<>), help, Parser, short, switch, strOption)
+import Data.Monoid (mempty)
+import Data.These (These(This, That, These))
+import Hopts.Language (Argument(Argument), ArgFlag, ArgType(SwitchArg, StringArg), EnvVar)
+import Options.Applicative.Builder.Internal (HasName, Mod)
+import Options.Applicative ((<>), help, long, Parser, short, switch, strOption)
 
-{-| 'argDataToOptParse' transforms argument data ('ArgData') into a tuple containing the
-environment variable to be set after succesfully parsing a command-line argument via optparse-applicative,
-and the value of said data. For example, given an argument data such as:
+argFlagToMod :: HasName f => ArgFlag -> Mod f a
+argFlagToMod (This c) = short c
+argFlagToMod (That lng) = long lng
+argFlagToMod (These c lng) = short c <> long lng
 
-@
-  ShortArg \'x\' \"X_VAR\" \"set the x var\" --> Parser (String, String)
-@
+quote :: Maybe String -> Mod f a
+quote (Just str) = help str
+quote Nothing = mempty
 
-upon initializing our application with: '.\/app.sh -x cool' this tuple will represent '(X_VAR, cool)'
+boolString :: Bool -> String
+boolString True = "true"
+boolString False = "false"
+
+{-| 'argToOption' transforms an 'Argument' into an optparse-applicative-based parser.
 -}
-argDataToOptParse :: ArgData -> Parser (String, String)
-argDataToOptParse (ShortArg argChar envVar quote isSwitch) = 
-  (,) envVar <$> (strOption) (short argChar <> help quote)
+argToOption :: Argument -> Parser (EnvVar, String)
+argToOption (Argument SwitchArg argFlag envVar mQuote) = (,) envVar <$> (boolString <$> switch (argFlagToMod argFlag <> quote mQuote))
+argToOption (Argument StringArg argFlag envVar mQuote) = (,) envVar <$> (strOption (argFlagToMod argFlag <> quote mQuote))
